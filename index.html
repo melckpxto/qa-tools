@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QA Tools - Gerador de Dados para Testes</title>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --secondary: #0ea5e9;
+            --accent: #8b5cf6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-300: #cbd5e1;
+            --gray-400: #94a3b8;
+            --gray-500: #64748b;
+            --gray-600: #475569;
+            --gray-700: #334155;
+            --gray-800: #1e293b;
+            --gray-900: #0f172a;
+            --border-radius: 0.5rem;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f8fafc;
+            color: var(--gray-700);
+            line-height: 1.6;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            padding: 2.5rem 1rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+            z-index: 0;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            position: relative;
+            font-weight: 800;
+            letter-spacing: -0.025em;
+        }
+
+        header p {
+            font-size: 1.25rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        nav {
+            background-color: white;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow-sm);
+        }
+
+        nav a {
+            color: var(--gray-700);
+            text-decoration: none;
+            padding: 1rem 1.25rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            position: relative;
+            display: inline-block;
+        }
+
+        nav a:hover {
+            color: var(--primary);
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background-color: var(--primary);
+            transform: scaleX(0);
+            transition: transform 0.2s ease;
+        }
+
+        nav a:hover::after {
+            transform: scaleX(1);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .tool-section {
+            margin-bottom: 2.5rem;
+            padding: 0;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            background-color: transparent;
+        }
+
+        .section-header {
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+            border: 1px solid var(--gray-200);
+            border-bottom: none;
+        }
+
+        .section-content {
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: 0 0 var(--border-radius) var(--border-radius);
+            border: 1px solid var(--gray-200);
+        }
+
+        h2 {
+            color: var(--gray-800);
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin: 0;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--gray-700);
+        }
+
+        select, input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--border-radius);
+            background-color: white;
+            color: var(--gray-700);
+            font-size: 1rem;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        button:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .button-icon {
+            margin-right: 0.5rem;
+        }
+
+        .copy-btn {
+            background-color: var(--success);
+            margin-left: 0.5rem;
+        }
+
+        .copy-btn:hover {
+            background-color: #0d9488;
+        }
+
+        .export-btn {
+            background-color: var(--secondary);
+            margin-right: 0.5rem;
+        }
+        
+        .export-btn:hover {
+            background-color: #0284c7;
+        }
+
+        .output {
+            margin-top: 1.5rem;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            background-color: white;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--gray-200);
+        }
+
+        .output-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            background-color: var(--gray-100);
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .output-header h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--gray-800);
+            margin: 0;
+        }
+
+        .output-content {
+            padding: 1.5rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        table, th, td {
+            border: none;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+        }
+
+        tr:not(:last-child) {
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        th {
+            background-color: var(--gray-100);
+            font-weight: 600;
+            color: var(--gray-700);
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: var(--gray-50);
+        }
+
+        .flex-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+
+        .flex-item {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            header {
+                padding: 2rem 1rem;
+            }
+            
+            header h1 {
+                font-size: 2rem;
+            }
+            
+            nav {
+                justify-content: flex-start;
+                overflow-x: auto;
+                padding: 0 1rem;
+            }
+            
+            nav a {
+                padding: 1rem 0.75rem;
+                white-space: nowrap;
+            }
+            
+            .flex-container {
+                flex-direction: column;
+            }
+            
+            .flex-item {
+                width: 100%;
+            }
+        }
+
+        /* Tool icon badges */
+        .tool-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            margin-right: 0.75rem;
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .tool-title {
+            display: flex;
+            align-items: center;
+        }
+
+        /* Tooltip */
+        .tooltip {
+            position: relative;
+        }
+
+        .tooltip-text {
+            visibility: hidden;
+            width: 200px;
+            background-color: var(--gray-800);
+            color: white;
+            text-align: center;
+            border-radius: 6px;
+            padding: 0.5rem;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.875rem;
+            pointer-events: none;
+        }
+
+        .tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease forwards;
+        }
+
+        /* Card hover effect */
+        .hover-card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .hover-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--gray-100);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--gray-400);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--gray-500);
+        }
+
+        /* Copy animation */
+        @keyframes copySuccess {
+            0% { background-color: var(--success); }
+            70% { background-color: var(--success); }
+            100% { background-color: var(--success); }
+        }
+
+        .copy-success {
+            animation: copySuccess 1.5s ease;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>QA Tools</h1>
+        <p>Gerador de dados para testes e desenvolvimento de software</p>
+    </header>
+    <nav>
+        <a href="#pessoa">Gerador de Pessoas</a>
+        <a href="#cpf">Gerador de CPF</a>
+        <a href="#cnpj">Gerador de CNPJ</a>
+        <a href="#rg">Gerador de RG</a>
+        <a href="#titulo">Gerador de Título Eleitoral</a>
+        <a href="#cartao">Gerador de Cartão</a>
+        <a href="#endereco">Gerador de Endereços</a>
+        <a href="#multi">Gerador em Massa</a>
+    </nav>
+    
+    <div class="container">
+        <div id="pessoa" class="tool-section">
+            <div class="section-header">
+                <div class="tool-title">
+                    <div class="tool-badge">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                    </div>
+                    <h2>Gerador de Pessoas</h2>
+                </div>
+            </div>
+            <div class="section-content">
+                <div class="flex-container">
+                    <div class="flex-item">
+                        <div class="form-group">
+                            <label for="person-gender">Gênero:</label>
+                            <select id="person-gender">
+                                <option value="random">Aleatório</option>
+                                <option value="male">Masculino</option>
+                                <option value="female">Feminino</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="flex-item">
+                        <div class="form-group">
+                            <label for="person-age">Idade:</label>
+                            <select id="person-age">
+                                <option value="random">Aleatória</option>
+                                <option value="adult">Adulto (18-60)</option>
+                                <option value="senior">Idoso (60+)</option>
+                                <option value="teen">Adolescente (12-18)</option>
+                                <option value="child">Criança (0-12)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <button onclick="generatePerson()">
+                    <span class="button-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 22v-6"></path>
+                            <path d="M9 18h6"></path>
+                            <path d="M12 6a4 4 0 0 0-4 4v8"></path>
+                            <path d="M16 10v2a4 4 0 0 1-4 4h0a4 4 0 0 1-4-4v-2"></path>
+                            <circle cx="12" cy="6" r="4"></circle>
+                        </svg>
+                    </span>
+                    Gerar Pessoa
+                </button>
+                
+                <div id="person-output" class="output" style="display: none;">
+                    <div class="output-header">
+                        <h3>Dados Gerados</h3>
+                        <button class="copy-btn" onclick="copyToClipboard('person-data')">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                            </svg>
+                            Copiar Dados
+                        </button>
+                    </div>
+                    <div class="output-content">
+                        <div id="person-data">
+                            <!-- Dados da pessoa gerada serão inseridos aqui -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="cpf" class="tool-section">
+            <div class="section-header">
+                <div class="tool-title">
+                    <div class="tool-badge">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="4" width="18" height="16" rx="2"></rect>
+                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                        </svg>
+                    </div>
+                    <h2>Gerador de CPF</h2>
+                </div>
+            </div>
+            <div class="section-content">
+                <div class="form-group">
+                    <label for="cpf-format">Formato:</label>
+                    <select id="cpf-format">
+                        <option value="formatted">Formatado (000.000.000-00)</option>
+                        <option value="numeric">Apenas números</option>
+                    </select>
+                </div>
+                <button onclick="generateCPF()">
+                    <span class="button-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                        </svg>
+                    </span>
+                    Gerar CPF
+                </button>
+                <div class="output" style="margin-top: 1.5rem;">
+                    <div class="output-header">
+                        <h3>CPF Gerado</h3>
+                        <button class="copy-btn" onclick="copyToClipboard('cpf-output')" style="display: none;" id="copy-cpf-btn">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                            </svg>
+                            Copiar
+                        </button>
+                    </div>
+                    <div class="output-content">
+                        <span id="cpf-output" style="font-size: 1.25rem; font-weight: 500;">Clique em "Gerar CPF" para criar um novo CPF válido</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="cnpj" class="tool-section">
+            <div class="section-header">
+                <div class="tool-title">
+                    <div class="tool-badge">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
+                            <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
+                            <line x1="6" y1="1" x2="6" y2="4"></line>
+                            <line x1="10" y1="1" x2="10" y2="4"></line>
+                            <line x1="14" y1="1" x2="14" y2="4"></line>
+                        </svg>
+                    </div>
+                    <h2>Gerador de CNPJ</h2>
+                </div>
+            </div>
+            <div class="section-content">
+                <div class="form-group">
+                    <label for="cnpj-format">Formato:</label>
+                    <select id="cnpj-format">
+                        <option value="formatted">Formatado (00.000.000/0000-00)</option>
+                        <option value="numeric">Apenas números</option>
+                    </select>
+                </div>
+                <button onclick="generateCNPJ()">
+                    <span class="button-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                        </svg>
+                    </span>
+                    Gerar CNPJ
+                </button>
+                <div class="output" style="margin-top: 1.5rem;">
+                    <div class="output-header">
+                        <h3>CNPJ Gerado</h3>
+                        <button class="copy-btn" onclick="copyToClipboard('cnpj-output')" style="display: none;" id="copy-cnpj-btn">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                            </svg>
+                            Copiar
+                        </button>
+                    </div>
+                    <div class="output-content">
+                        <span id="cnpj-output" style="font-size: 1.25rem; font-weight: 500;">Clique em "Gerar CNPJ" para criar um novo CNPJ válido</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="rg" class="tool-section">
+            <div class="section-header">
+                <div class="tool-title">
+                    <div class="tool-badge">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="4" width="18" height="16" rx="2"></rect>
+                            <rect x="7" y="8" width="10" height="6" rx="1"></rect>
+                            <line x1="7" y1="17" x2="17" y2="17"></line>
+                        </svg>
+                    </div>
+                    <h2>Gerador de RG</h2>
+                </div>
+            </div>
+            <div class="section-content">
+                <div class="form-group">
+                    <label for="rg-state">Estado:</label>
+                    <select id="rg-state">
+                        <option value="SP">São Paulo</option>
+                        <option value="RJ">Rio de Janeiro</option>
+                        <option value="MG">Minas Gerais</option>
+                        <option value="RS">Rio Grande do Sul</option>
+                        <option value="PR">Paraná</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="rg-format">Formato:</label>
+                    <select id="rg-format">
+                        <option value="formatted">Formatado (00.000.000-0)</option>
+                        <option value="numeric">Apenas números</option>
+                    </select>
+                </div>
+                <button onclick="generateRG()">
+                    <span class="button-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                        </svg>
+                    </span>
+                    Gerar RG
+                </button>
+                <div class="output" style="margin-top: 1.5rem;">
+                    <div class="output-header">
+                        <h3>RG Gerado</h3>
+                        <button class="copy-btn" onclick="copyToClipboard('rg-output')" style="display: none;" id="copy-rg-btn">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                            </svg>
+                            Copiar
+                        </button>
+                    </div>
+                    <div class="output-content">
+                        <span id="rg-output" style="font-size: 1.25rem; font-weight: 500;">Clique em "Gerar RG" para criar um novo RG válido</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="titulo" class="tool-section">
+            <div class="section-header">
+                <div class="tool-title">
+                    <div class="tool-badge">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3H6a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 3 3 0 0 0-3-3z"></path>
+                        </svg>
+                    </div>
+                    <h2>Gerador de Título Eleitoral</h2>
+                </div>
+            </div>
+            <div class="section-content">
+                <div class="form-group">
+                    <label for="titulo-estado">Estado (UF):</label>
+                    <select id="titulo-estado">
+                        <option value="SP">São Paulo</option>
+                        <option value="RJ">Rio de Janeiro</option>
+                        <option value="MG">Minas Gerais</option>
+                        <option value="RS">Rio Grande do Sul</option>
+                        <option value="PR">Paraná</option>
+                        <option value="BA">Bahia</option>
+                        <option value="SC">Santa Catarina</option>
+                        <option value="GO">Goiás</option>
+                        <option value="PE">Pernambuco</option>
+                        <option value="CE">Ceará</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="titulo-format">Formato:</label>
+                    <select id="titulo-format">
+                        <option value="formatted">Formatado (0000 0000 0000)</option>
+                        <option value="numeric">Apenas números</option>
+                    </select>
+                </div>
+                <button onclick="generateTituloEleitoral()">
+                    <span class="button-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                        </svg>
+                    </span>
+                    Gerar Título Eleitoral
+                </button>
+                <div class="output" style="margin-top: 1.5rem;">
+                    <div class="output-header">
+                        <h3>Título Eleitoral Gerado</h3>
+                        <button class="copy-btn" onclick="copyToClipboard('titulo-output')" style="display: none;" id="copy-titulo-btn">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                            </svg>
+                            Copiar
+                        </button>
+                    </div>
+                    <div class="output-content">
+                        <span id="titulo-output" style="font-size: 1.25rem; font-weight: 500;">Clique em "Gerar Título Eleitoral" para criar um novo título válido</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="cartao" class="tool-section">
+            <div class="section-header">
+                <div class="tool-title">
+                    <div class="tool-badge">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                            <line x1="1" y1="10" x2="23" y2="10"></line>
+                        </svg>
+                    </div>
+                    <h2>Gerador de Cartão de Crédito</h2>
+                </div>
+            </div>
+            <div class="section-content">
+                <div class="form-group">
+                    <label for="card-brand">Bandeira:</label>
+                    <select id="card-brand">
+                        <option value="visa">Visa</option>
+                        <option value="mastercard">Mastercard</option>
+                        <option value="amex">American Express</option>
+                        <option value="discover">Discover</option>
+                        <option value="random">Aleatória</option>
+                    </select>
+                </div>
+                <button onclick="generateCreditCard()">
+                    <span class="button-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                        </svg>
+                    </span>
+                    Gerar Cartão de Crédito
+                </button>
+                <div class="output" style="margin-top: 1.5rem;">
+                    <div class="output-header">
+                        <h3>Cartão de Crédito Gerado</h3>
+                        <button class="copy-btn" onclick="copyToClipboard('card-output')" style="display: none;" id="copy-card-btn">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                            </svg>
+                            Copiar
+                        </button>
+                    </div>
+                    <div class="output-content">
+                        <div id="card-output" style="font-size: 1.25rem; font-weight: 500;">Clique em "Gerar Cartão de Crédito" para criar um novo cartão válido</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="endereco" class="tool-section">
+            <div class="section-header">
+                <div class="tool-title">
+                    <div class="tool-badge">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                            <circle cx="12" cy="10" r="3"></circle>
+                        </svg>
+                    </div>
+                    <h2>Gerador de Endereços</h2>
+                </div>
+            </div>
+            <div class="section-content">
+                <div class="form-group">
+                    <label for="address-state">Estado:</label>
+                    <select id="address-state">
+                        <option value="random">Aleatório</option>
+                        <option value="SP">São Paulo</option>
+                        <option value="RJ">Rio de Janeiro</option>
+                        <option value="MG">Minas Gerais</option>
+                        <option value="RS">Rio Grande do Sul</option>
+                        <option value="PR">Paraná</option>
+                        <!-- Outros estados podem ser adicionados -->
+                    </select>
+                </div>
+                <button onclick="generateAddress()">
+                    <span class="button-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                        </svg>
+                    </span>
+                    Gerar Endereço
+                </button>
+                <div id="address-output" class="output" style="display: none;">
+                    <div class="output-header">
+                        <h3>Endereço Gerado</h3>
+                        <button class="copy-btn" onclick="copyToClipboard('address-data')">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16"
