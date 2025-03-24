@@ -3,822 +3,347 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QA Tools - Gerador de Dados para Testes</title>
+    <title>Gerador QA</title>
     <style>
-        :root {
-            --primary: #6366f1;
-            --primary-hover: #4f46e5;
-            --secondary: #0ea5e9;
-            --accent: #8b5cf6;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --danger: #ef4444;
-            --dark: #1e293b;
-            --light: #f8fafc;
-            --gray-100: #f1f5f9;
-            --gray-200: #e2e8f0;
-            --gray-300: #cbd5e1;
-            --gray-400: #94a3b8;
-            --gray-500: #64748b;
-            --gray-600: #475569;
-            --gray-700: #334155;
-            --gray-800: #1e293b;
-            --gray-900: #0f172a;
-            --border-radius: 0.5rem;
-            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: #f8fafc;
-            color: var(--gray-700);
-            line-height: 1.6;
-        }
-
-        header {
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            color: white;
-            padding: 2.5rem 1rem;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-            box-shadow: var(--shadow-md);
-        }
-
-        header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
-            z-index: 0;
-        }
-
-        header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
-            position: relative;
-            font-weight: 800;
-            letter-spacing: -0.025em;
-        }
-
-        header p {
-            font-size: 1.25rem;
-            opacity: 0.9;
-            max-width: 600px;
+            font-family: Arial, sans-serif;
+            max-width: 800px;
             margin: 0 auto;
-            position: relative;
+            padding: 20px;
         }
-
-        nav {
-            background-color: white;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: var(--shadow-sm);
+        h1, h2 {
+            color: #333;
         }
-
-        nav a {
-            color: var(--gray-700);
-            text-decoration: none;
-            padding: 1rem 1.25rem;
-            font-weight: 500;
-            transition: all 0.2s ease;
-            position: relative;
-            display: inline-block;
+        .section {
+            margin-bottom: 30px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
         }
-
-        nav a:hover {
-            color: var(--primary);
-        }
-
-        nav a::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background-color: var(--primary);
-            transform: scaleX(0);
-            transition: transform 0.2s ease;
-        }
-
-        nav a:hover::after {
-            transform: scaleX(1);
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 2rem auto;
-            padding: 0 1rem;
-        }
-
-        .tool-section {
-            margin-bottom: 2.5rem;
-            padding: 0;
-            border-radius: var(--border-radius);
-            overflow: hidden;
-            background-color: transparent;
-        }
-
-        .section-header {
-            background-color: white;
-            padding: 1.5rem;
-            border-radius: var(--border-radius) var(--border-radius) 0 0;
-            border: 1px solid var(--gray-200);
-            border-bottom: none;
-        }
-
-        .section-content {
-            background-color: white;
-            padding: 1.5rem;
-            border-radius: 0 0 var(--border-radius) var(--border-radius);
-            border: 1px solid var(--gray-200);
-        }
-
-        h2 {
-            color: var(--gray-800);
-            font-weight: 700;
-            font-size: 1.5rem;
-            margin: 0;
-        }
-
-        .form-group {
-            margin-bottom: 1.25rem;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-            color: var(--gray-700);
-        }
-
-        select, input {
-            width: 100%;
-            padding: 0.75rem 1rem;
-            border: 1px solid var(--gray-300);
-            border-radius: var(--border-radius);
-            background-color: white;
-            color: var(--gray-700);
-            font-size: 1rem;
-            transition: border-color 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        select:focus, input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
-        }
-
         button {
-            background-color: var(--primary);
+            background-color: #4CAF50;
             color: white;
             border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: var(--border-radius);
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: 500;
-            transition: all 0.2s ease;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        button:hover {
-            background-color: var(--primary-hover);
-            transform: translateY(-1px);
-            box-shadow: var(--shadow);
-        }
-
-        button:active {
-            transform: translateY(0);
-        }
-
-        .button-icon {
-            margin-right: 0.5rem;
-        }
-
-        .copy-btn {
-            background-color: var(--success);
-            margin-left: 0.5rem;
-        }
-
-        .copy-btn:hover {
-            background-color: #0d9488;
-        }
-
-        .export-btn {
-            background-color: var(--secondary);
-            margin-right: 0.5rem;
-        }
-        
-        .export-btn:hover {
-            background-color: #0284c7;
-        }
-
-        .output {
-            margin-top: 1.5rem;
-            border-radius: var(--border-radius);
-            overflow: hidden;
-            background-color: white;
-            box-shadow: var(--shadow-sm);
-            border: 1px solid var(--gray-200);
-        }
-
-        .output-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 1.5rem;
-            background-color: var(--gray-100);
-            border-bottom: 1px solid var(--gray-200);
-        }
-
-        .output-header h3 {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: var(--gray-800);
-            margin: 0;
-        }
-
-        .output-content {
-            padding: 1.5rem;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 0;
-            overflow: hidden;
-        }
-
-        table, th, td {
-            border: none;
-        }
-
-        th, td {
-            padding: 1rem;
-            text-align: left;
-        }
-
-        tr:not(:last-child) {
-            border-bottom: 1px solid var(--gray-200);
-        }
-
-        th {
-            background-color: var(--gray-100);
-            font-weight: 600;
-            color: var(--gray-700);
-        }
-
-        tbody tr:nth-child(even) {
-            background-color: var(--gray-50);
-        }
-
-        .flex-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1.5rem;
-        }
-
-        .flex-item {
-            flex: 1;
-            min-width: 250px;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            header {
-                padding: 2rem 1rem;
-            }
-            
-            header h1 {
-                font-size: 2rem;
-            }
-            
-            nav {
-                justify-content: flex-start;
-                overflow-x: auto;
-                padding: 0 1rem;
-            }
-            
-            nav a {
-                padding: 1rem 0.75rem;
-                white-space: nowrap;
-            }
-            
-            .flex-container {
-                flex-direction: column;
-            }
-            
-            .flex-item {
-                width: 100%;
-            }
-        }
-
-        /* Tool icon badges */
-        .tool-badge {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            margin-right: 0.75rem;
-            background-color: var(--primary);
-            color: white;
-        }
-
-        .tool-title {
-            display: flex;
-            align-items: center;
-        }
-
-        /* Tooltip */
-        .tooltip {
-            position: relative;
-        }
-
-        .tooltip-text {
-            visibility: hidden;
-            width: 200px;
-            background-color: var(--gray-800);
-            color: white;
-            text-align: center;
-            border-radius: 6px;
-            padding: 0.5rem;
-            position: absolute;
-            z-index: 1;
-            bottom: 125%;
-            left: 50%;
-            transform: translateX(-50%);
-            opacity: 0;
-            transition: opacity 0.3s;
-            font-size: 0.875rem;
-            pointer-events: none;
-        }
-
-        .tooltip:hover .tooltip-text {
-            visibility: visible;
-            opacity: 1;
-        }
-
-        /* Animation */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .fade-in {
-            animation: fadeIn 0.3s ease forwards;
-        }
-
-        /* Card hover effect */
-        .hover-card {
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        .hover-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-md);
-        }
-
-        /* Custom scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: var(--gray-100);
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: var(--gray-400);
+            padding: 10px 15px;
             border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
         }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--gray-500);
-        }
-
-        /* Copy animation */
-        @keyframes copySuccess {
-            0% { background-color: var(--success); }
-            70% { background-color: var(--success); }
-            100% { background-color: var(--success); }
-        }
-
-        .copy-success {
-            animation: copySuccess 1.5s ease;
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            border: 1px solid #eee;
+            background-color: #f9f9f9;
         }
     </style>
 </head>
 <body>
-    <header>
-        <h1>QA Tools</h1>
-        <p>Gerador de dados para testes e desenvolvimento de software</p>
-    </header>
-    <nav>
-        <a href="#pessoa">Gerador de Pessoas</a>
-        <a href="#cpf">Gerador de CPF</a>
-        <a href="#cnpj">Gerador de CNPJ</a>
-        <a href="#rg">Gerador de RG</a>
-        <a href="#titulo">Gerador de Título Eleitoral</a>
-        <a href="#cartao">Gerador de Cartão</a>
-        <a href="#endereco">Gerador de Endereços</a>
-        <a href="#multi">Gerador em Massa</a>
-    </nav>
-    
-    <div class="container">
-        <div id="pessoa" class="tool-section">
-            <div class="section-header">
-                <div class="tool-title">
-                    <div class="tool-badge">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                            <circle cx="12" cy="7" r="4"></circle>
-                        </svg>
-                    </div>
-                    <h2>Gerador de Pessoas</h2>
-                </div>
-            </div>
-            <div class="section-content">
-                <div class="flex-container">
-                    <div class="flex-item">
-                        <div class="form-group">
-                            <label for="person-gender">Gênero:</label>
-                            <select id="person-gender">
-                                <option value="random">Aleatório</option>
-                                <option value="male">Masculino</option>
-                                <option value="female">Feminino</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="flex-item">
-                        <div class="form-group">
-                            <label for="person-age">Idade:</label>
-                            <select id="person-age">
-                                <option value="random">Aleatória</option>
-                                <option value="adult">Adulto (18-60)</option>
-                                <option value="senior">Idoso (60+)</option>
-                                <option value="teen">Adolescente (12-18)</option>
-                                <option value="child">Criança (0-12)</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                
-                <button onclick="generatePerson()">
-                    <span class="button-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M12 22v-6"></path>
-                            <path d="M9 18h6"></path>
-                            <path d="M12 6a4 4 0 0 0-4 4v8"></path>
-                            <path d="M16 10v2a4 4 0 0 1-4 4h0a4 4 0 0 1-4-4v-2"></path>
-                            <circle cx="12" cy="6" r="4"></circle>
-                        </svg>
-                    </span>
-                    Gerar Pessoa
-                </button>
-                
-                <div id="person-output" class="output" style="display: none;">
-                    <div class="output-header">
-                        <h3>Dados Gerados</h3>
-                        <button class="copy-btn" onclick="copyToClipboard('person-data')">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                            </svg>
-                            Copiar Dados
-                        </button>
-                    </div>
-                    <div class="output-content">
-                        <div id="person-data">
-                            <!-- Dados da pessoa gerada serão inseridos aqui -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div id="cpf" class="tool-section">
-            <div class="section-header">
-                <div class="tool-title">
-                    <div class="tool-badge">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="3" y="4" width="18" height="16" rx="2"></rect>
-                            <line x1="8" y1="2" x2="8" y2="6"></line>
-                            <line x1="16" y1="2" x2="16" y2="6"></line>
-                            <line x1="3" y1="10" x2="21" y2="10"></line>
-                        </svg>
-                    </div>
-                    <h2>Gerador de CPF</h2>
-                </div>
-            </div>
-            <div class="section-content">
-                <div class="form-group">
-                    <label for="cpf-format">Formato:</label>
-                    <select id="cpf-format">
-                        <option value="formatted">Formatado (000.000.000-00)</option>
-                        <option value="numeric">Apenas números</option>
-                    </select>
-                </div>
-                <button onclick="generateCPF()">
-                    <span class="button-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
-                        </svg>
-                    </span>
-                    Gerar CPF
-                </button>
-                <div class="output" style="margin-top: 1.5rem;">
-                    <div class="output-header">
-                        <h3>CPF Gerado</h3>
-                        <button class="copy-btn" onclick="copyToClipboard('cpf-output')" style="display: none;" id="copy-cpf-btn">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                            </svg>
-                            Copiar
-                        </button>
-                    </div>
-                    <div class="output-content">
-                        <span id="cpf-output" style="font-size: 1.25rem; font-weight: 500;">Clique em "Gerar CPF" para criar um novo CPF válido</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div id="cnpj" class="tool-section">
-            <div class="section-header">
-                <div class="tool-title">
-                    <div class="tool-badge">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
-                            <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
-                            <line x1="6" y1="1" x2="6" y2="4"></line>
-                            <line x1="10" y1="1" x2="10" y2="4"></line>
-                            <line x1="14" y1="1" x2="14" y2="4"></line>
-                        </svg>
-                    </div>
-                    <h2>Gerador de CNPJ</h2>
-                </div>
-            </div>
-            <div class="section-content">
-                <div class="form-group">
-                    <label for="cnpj-format">Formato:</label>
-                    <select id="cnpj-format">
-                        <option value="formatted">Formatado (00.000.000/0000-00)</option>
-                        <option value="numeric">Apenas números</option>
-                    </select>
-                </div>
-                <button onclick="generateCNPJ()">
-                    <span class="button-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
-                        </svg>
-                    </span>
-                    Gerar CNPJ
-                </button>
-                <div class="output" style="margin-top: 1.5rem;">
-                    <div class="output-header">
-                        <h3>CNPJ Gerado</h3>
-                        <button class="copy-btn" onclick="copyToClipboard('cnpj-output')" style="display: none;" id="copy-cnpj-btn">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                            </svg>
-                            Copiar
-                        </button>
-                    </div>
-                    <div class="output-content">
-                        <span id="cnpj-output" style="font-size: 1.25rem; font-weight: 500;">Clique em "Gerar CNPJ" para criar um novo CNPJ válido</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div id="rg" class="tool-section">
-            <div class="section-header">
-                <div class="tool-title">
-                    <div class="tool-badge">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="3" y="4" width="18" height="16" rx="2"></rect>
-                            <rect x="7" y="8" width="10" height="6" rx="1"></rect>
-                            <line x1="7" y1="17" x2="17" y2="17"></line>
-                        </svg>
-                    </div>
-                    <h2>Gerador de RG</h2>
-                </div>
-            </div>
-            <div class="section-content">
-                <div class="form-group">
-                    <label for="rg-state">Estado:</label>
-                    <select id="rg-state">
-                        <option value="SP">São Paulo</option>
-                        <option value="RJ">Rio de Janeiro</option>
-                        <option value="MG">Minas Gerais</option>
-                        <option value="RS">Rio Grande do Sul</option>
-                        <option value="PR">Paraná</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="rg-format">Formato:</label>
-                    <select id="rg-format">
-                        <option value="formatted">Formatado (00.000.000-0)</option>
-                        <option value="numeric">Apenas números</option>
-                    </select>
-                </div>
-                <button onclick="generateRG()">
-                    <span class="button-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
-                        </svg>
-                    </span>
-                    Gerar RG
-                </button>
-                <div class="output" style="margin-top: 1.5rem;">
-                    <div class="output-header">
-                        <h3>RG Gerado</h3>
-                        <button class="copy-btn" onclick="copyToClipboard('rg-output')" style="display: none;" id="copy-rg-btn">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                            </svg>
-                            Copiar
-                        </button>
-                    </div>
-                    <div class="output-content">
-                        <span id="rg-output" style="font-size: 1.25rem; font-weight: 500;">Clique em "Gerar RG" para criar um novo RG válido</span>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <h1>Gerador de Dados para QA</h1>
 
-        <div id="titulo" class="tool-section">
-            <div class="section-header">
-                <div class="tool-title">
-                    <div class="tool-badge">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M18 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3H6a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 3 3 0 0 0-3-3z"></path>
-                        </svg>
-                    </div>
-                    <h2>Gerador de Título Eleitoral</h2>
-                </div>
-            </div>
-            <div class="section-content">
-                <div class="form-group">
-                    <label for="titulo-estado">Estado (UF):</label>
-                    <select id="titulo-estado">
-                        <option value="SP">São Paulo</option>
-                        <option value="RJ">Rio de Janeiro</option>
-                        <option value="MG">Minas Gerais</option>
-                        <option value="RS">Rio Grande do Sul</option>
-                        <option value="PR">Paraná</option>
-                        <option value="BA">Bahia</option>
-                        <option value="SC">Santa Catarina</option>
-                        <option value="GO">Goiás</option>
-                        <option value="PE">Pernambuco</option>
-                        <option value="CE">Ceará</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="titulo-format">Formato:</label>
-                    <select id="titulo-format">
-                        <option value="formatted">Formatado (0000 0000 0000)</option>
-                        <option value="numeric">Apenas números</option>
-                    </select>
-                </div>
-                <button onclick="generateTituloEleitoral()">
-                    <span class="button-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
-                        </svg>
-                    </span>
-                    Gerar Título Eleitoral
-                </button>
-                <div class="output" style="margin-top: 1.5rem;">
-                    <div class="output-header">
-                        <h3>Título Eleitoral Gerado</h3>
-                        <button class="copy-btn" onclick="copyToClipboard('titulo-output')" style="display: none;" id="copy-titulo-btn">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                            </svg>
-                            Copiar
-                        </button>
-                    </div>
-                    <div class="output-content">
-                        <span id="titulo-output" style="font-size: 1.25rem; font-weight: 500;">Clique em "Gerar Título Eleitoral" para criar um novo título válido</span>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="section">
+        <h2>Gerador de CPF</h2>
+        <button onclick="document.getElementById('cpf-result').textContent = gerarCPF()">Gerar CPF</button>
+        <div id="cpf-result" class="result"></div>
+    </div>
 
-        <div id="cartao" class="tool-section">
-            <div class="section-header">
-                <div class="tool-title">
-                    <div class="tool-badge">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
-                            <line x1="1" y1="10" x2="23" y2="10"></line>
-                        </svg>
-                    </div>
-                    <h2>Gerador de Cartão de Crédito</h2>
-                </div>
-            </div>
-            <div class="section-content">
-                <div class="form-group">
-                    <label for="card-brand">Bandeira:</label>
-                    <select id="card-brand">
-                        <option value="visa">Visa</option>
-                        <option value="mastercard">Mastercard</option>
-                        <option value="amex">American Express</option>
-                        <option value="discover">Discover</option>
-                        <option value="random">Aleatória</option>
-                    </select>
-                </div>
-                <button onclick="generateCreditCard()">
-                    <span class="button-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
-                        </svg>
-                    </span>
-                    Gerar Cartão de Crédito
-                </button>
-                <div class="output" style="margin-top: 1.5rem;">
-                    <div class="output-header">
-                        <h3>Cartão de Crédito Gerado</h3>
-                        <button class="copy-btn" onclick="copyToClipboard('card-output')" style="display: none;" id="copy-card-btn">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                            </svg>
-                            Copiar
-                        </button>
-                    </div>
-                    <div class="output-content">
-                        <div id="card-output" style="font-size: 1.25rem; font-weight: 500;">Clique em "Gerar Cartão de Crédito" para criar um novo cartão válido</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div id="endereco" class="tool-section">
-            <div class="section-header">
-                <div class="tool-title">
-                    <div class="tool-badge">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                            <circle cx="12" cy="10" r="3"></circle>
-                        </svg>
-                    </div>
-                    <h2>Gerador de Endereços</h2>
-                </div>
-            </div>
-            <div class="section-content">
-                <div class="form-group">
-                    <label for="address-state">Estado:</label>
-                    <select id="address-state">
-                        <option value="random">Aleatório</option>
-                        <option value="SP">São Paulo</option>
-                        <option value="RJ">Rio de Janeiro</option>
-                        <option value="MG">Minas Gerais</option>
-                        <option value="RS">Rio Grande do Sul</option>
-                        <option value="PR">Paraná</option>
-                        <!-- Outros estados podem ser adicionados -->
-                    </select>
-                </div>
-                <button onclick="generateAddress()">
-                    <span class="button-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                            <polyline points="9 22 9 12 15 12 15 22"></polyline>
-                        </svg>
-                    </span>
-                    Gerar Endereço
-                </button>
-                <div id="address-output" class="output" style="display: none;">
-                    <div class="output-header">
-                        <h3>Endereço Gerado</h3>
-                        <button class="copy-btn" onclick="copyToClipboard('address-data')">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16"
+    <div class="section">
+        <h2>Gerador de CNPJ</h2>
+        <button onclick="document.getElementById('cnpj-result').textContent = gerarCNPJ()">Gerar CNPJ</button>
+        <div id="cnpj-result" class="result"></div>
+    </div>
+
+    <div class="section">
+        <h2>Gerador de RG</h2>
+        <button onclick="document.getElementById('rg-result').textContent = gerarRG()">Gerar RG</button>
+        <div id="rg-result" class="result"></div>
+    </div>
+
+    <div class="section">
+        <h2>Gerador de Cartão de Crédito</h2>
+        <button onclick="document.getElementById('cartao-result').textContent = gerarCartao()">Gerar Cartão</button>
+        <div id="cartao-result" class="result"></div>
+    </div>
+
+    <div class="section">
+        <h2>Gerador de Pessoa</h2>
+        <button onclick="document.getElementById('pessoa-result').textContent = gerarPessoa()">Gerar Pessoa</button>
+        <div id="pessoa-result" class="result"></div>
+    </div>
+
+    <div class="section">
+        <h2>Gerador de Título de Eleitor</h2>
+        <button onclick="document.getElementById('titulo-result').textContent = gerarTitulo()">Gerar Título</button>
+        <div id="titulo-result" class="result"></div>
+    </div>
+
+    <script>
+        // Funções utilitárias
+        function randomInt(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        function formatDate(day, month, year) {
+            return `${day.toString().padStart(2, '0')}/${month.toString().padStart(2, '0')}/${year}`;
+        }
+
+        // Gerador de CPF
+        function gerarCPF() {
+            const digits = Array.from({length: 9}, () => randomInt(0, 9));
+            
+            // Primeiro dígito verificador
+            let sum = 0;
+            for (let i = 0; i < 9; i++) {
+                sum += digits[i] * (10 - i);
+            }
+            let remainder = sum % 11;
+            const dv1 = remainder < 2 ? 0 : 11 - remainder;
+            digits.push(dv1);
+            
+            // Segundo dígito verificador
+            sum = 0;
+            for (let i = 0; i < 10; i++) {
+                sum += digits[i] * (11 - i);
+            }
+            remainder = sum % 11;
+            const dv2 = remainder < 2 ? 0 : 11 - remainder;
+            digits.push(dv2);
+            
+            // Formatar CPF
+            const cpf = digits.join('');
+            return `${cpf.substring(0, 3)}.${cpf.substring(3, 6)}.${cpf.substring(6, 9)}-${cpf.substring(9, 11)}`;
+        }
+
+        // Gerador de CNPJ
+        function gerarCNPJ() {
+            const digits = Array.from({length: 8}, () => randomInt(0, 9));
+            digits.push(0, 0, 0, 1); // 0001 para filial
+            
+            // Primeiro dígito verificador
+            const weights1 = [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
+            let sum = 0;
+            for (let i = 0; i < 12; i++) {
+                sum += digits[i] * weights1[i];
+            }
+            let remainder = sum % 11;
+            const dv1 = remainder < 2 ? 0 : 11 - remainder;
+            digits.push(dv1);
+            
+            // Segundo dígito verificador
+            const weights2 = [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
+            sum = 0;
+            for (let i = 0; i < 13; i++) {
+                sum += digits[i] * weights2[i];
+            }
+            remainder = sum % 11;
+            const dv2 = remainder < 2 ? 0 : 11 - remainder;
+            digits.push(dv2);
+            
+            // Formatar CNPJ
+            const cnpj = digits.join('');
+            return `${cnpj.substring(0, 2)}.${cnpj.substring(2, 5)}.${cnpj.substring(5, 8)}/${cnpj.substring(8, 12)}-${cnpj.substring(12, 14)}`;
+        }
+
+        // Gerador de RG
+        function gerarRG() {
+            const digits = Array.from({length: 8}, () => randomInt(0, 9));
+            
+            // Calcular dígito verificador
+            let sum = 0;
+            const weights = [2, 3, 4, 5, 6, 7, 8, 9];
+            for (let i = 0; i < 8; i++) {
+                sum += digits[i] * weights[i];
+            }
+            const remainder = sum % 11;
+            
+            let dv;
+            if (remainder === 0) {
+                dv = '0';
+            } else if (remainder === 1) {
+                dv = 'X';
+            } else {
+                dv = (11 - remainder).toString();
+            }
+            
+            // Formatar RG
+            const rg = digits.join('') + dv;
+            return `${rg.substring(0, 2)}.${rg.substring(2, 5)}.${rg.substring(5, 8)}-${rg.substring(8)}`;
+        }
+
+        // Gerador de Cartão de Crédito
+        function gerarCartao() {
+            const prefixes = {
+                visa: '4',
+                mastercard: '5',
+                amex: '3',
+                discover: '6'
+            };
+            
+            // Selecionar prefixo aleatório
+            const brands = Object.keys(prefixes);
+            const brand = brands[randomInt(0, brands.length - 1)];
+            let prefix = prefixes[brand];
+            if (brand === 'mastercard') {
+                prefix += randomInt(1, 5);
+            } else if (brand === 'amex') {
+                prefix += (randomInt(0, 1) === 0 ? '4' : '7');
+            } else if (brand === 'discover') {
+                prefix += '011';
+            }
+            
+            // Comprimento do cartão
+            const length = brand === 'amex' ? 15 : 16;
+            
+            // Gerar número do cartão
+            let number = prefix;
+            while (number.length < length - 1) {
+                number += randomInt(0, 9);
+            }
+            
+            // Calcular dígito verificador (Algoritmo de Luhn)
+            let sum = 0;
+            let alternate = false;
+            for (let i = number.length - 1; i >= 0; i--) {
+                let n = parseInt(number.charAt(i));
+                if (alternate) {
+                    n *= 2;
+                    if (n > 9) {
+                        n -= 9;
+                    }
+                }
+                sum += n;
+                alternate = !alternate;
+            }
+            const checkDigit = (10 - (sum % 10)) % 10;
+            number += checkDigit;
+            
+            // Gerar outros detalhes do cartão
+            const month = randomInt(1, 12).toString().padStart(2, '0');
+            const year = (new Date().getFullYear() + randomInt(1, 5)).toString().substring(2);
+            const cvv = brand === 'amex' ? randomInt(1000, 9999) : randomInt(100, 999);
+            
+            // Formatar saída
+            let cardNumber = '';
+            if (brand === 'amex') {
+                cardNumber = `${number.substring(0, 4)} ${number.substring(4, 10)} ${number.substring(10)}`;
+            } else {
+                cardNumber = `${number.substring(0, 4)} ${number.substring(4, 8)} ${number.substring(8, 12)} ${number.substring(12, 16)}`;
+            }
+            
+            return `${cardNumber}\nBandeira: ${brand.toUpperCase()}\nValidade: ${month}/${year}\nCVV: ${cvv}`;
+        }
+
+        // Gerador de Nome
+        function gerarNome(gender = null) {
+            const firstNamesMale = ["João", "Pedro", "Carlos", "Antonio", "José", "Paulo", "Lucas", "Marcos", "Gabriel", "Rafael"];
+            const firstNamesFemale = ["Maria", "Ana", "Juliana", "Fernanda", "Mariana", "Aline", "Patrícia", "Camila", "Luciana", "Vanessa"];
+            const lastNames = ["Silva", "Santos", "Oliveira", "Souza", "Pereira", "Costa", "Rodrigues", "Almeida", "Lima", "Ferreira"];
+            
+            if (gender === null) {
+                gender = randomInt(0, 1) === 0 ? 'male' : 'female';
+            }
+            
+            const firstNames = gender === 'male' ? firstNamesMale : firstNamesFemale;
+            const firstName = firstNames[randomInt(0, firstNames.length - 1)];
+            
+            // 1 ou 2 sobrenomes
+            const numLastNames = randomInt(1, 2);
+            let fullLastName = lastNames[randomInt(0, lastNames.length - 1)];
+            
+            if (numLastNames === 2) {
+                let secondLastName;
+                do {
+                    secondLastName = lastNames[randomInt(0, lastNames.length - 1)];
+                } while (secondLastName === fullLastName);
+                
+                fullLastName += ' ' + secondLastName;
+            }
+            
+            return {
+                fullName: `${firstName} ${fullLastName}`,
+                firstName: firstName,
+                lastName: fullLastName,
+                gender: gender
+            };
+        }
+
+        // Gerador de Pessoa
+        function gerarPessoa() {
+            const gender = randomInt(0, 1) === 0 ? 'male' : 'female';
+            const name = gerarNome(gender);
+            
+            // Gerar data de nascimento
+            const today = new Date();
+            const age = randomInt(18, 70);
+            const birthYear = today.getFullYear() - age;
+            const birthMonth = randomInt(1, 12);
+            const daysInMonth = new Date(birthYear, birthMonth, 0).getDate();
+            const birthDay = randomInt(1, daysInMonth);
+            
+            // Gerar CPF
+            const cpf = gerarCPF();
+            
+            // Gerar email
+            const domains = ['gmail.com', 'outlook.com', 'hotmail.com', 'yahoo.com.br', 'uol.com.br'];
+            const domain = domains[randomInt(0, domains.length - 1)];
+            const normalizedName = name.firstName.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+            const normalizedLastName = name.lastName.split(' ')[0].normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+            const email = `${normalizedName}.${normalizedLastName}${randomInt(10, 99)}@${domain}`;
+            
+            // Gerar telefone
+            const ddd = randomInt(11, 99);
+            const phonePrefix = randomInt(7, 9);
+            const phoneNumber = Array.from({length: 8}, () => randomInt(0, 9)).join('');
+            const phone = `(${ddd}) ${phonePrefix}${phoneNumber.substring(0, 4)}-${phoneNumber.substring(4)}`;
+            
+            return `Nome: ${name.fullName}
+Gênero: ${gender === 'male' ? 'Masculino' : 'Feminino'}
+Data de Nascimento: ${formatDate(birthDay, birthMonth, birthYear)}
+Idade: ${age} anos
+CPF: ${cpf}
+E-mail: ${email}
+Telefone: ${phone}`;
+        }
+
+        // Gerador de Título de Eleitor
+        function gerarTitulo() {
+            const estados = ['SP', 'RJ', 'MG', 'RS', 'PR', 'BA', 'SC', 'GO', 'PE', 'CE'];
+            const codigosEstados = {
+                'SP': '01', 'RJ': '02', 'MG': '03', 'RS': '04', 'PR': '05',
+                'BA': '06', 'SC': '07', 'GO': '08', 'PE': '09', 'CE': '10'
+            };
+            
+            const estado = estados[randomInt(0, estados.length - 1)];
+            const estadoCode = codigosEstados[estado];
+            
+            // Gerar 8 dígitos aleatórios para a inscrição
+            const inscricao = Array.from({length: 8}, () => randomInt(0, 9));
+            
+            // Calcular primeiro dígito verificador
+            let sum1 = 0;
+            for (let i = 0; i < 8; i++) {
+                sum1 += inscricao[i] * (i + 2);
+            }
+            let remainder1 = sum1 % 11;
+            if (remainder1 === 10) remainder1 = 0;
+            
+            // Calcular segundo dígito verificador
+            const estadoDigits = [parseInt(estadoCode[0]), parseInt(estadoCode[1])];
+            const fullNumber = [...inscricao, ...estadoDigits, remainder1];
+            const weights2 = [9, 8, 7, 6, 5, 4, 3, 2, 9, 8, 7];
+            
+            let sum2 = 0;
+            for (let i = 0; i < 11; i++) {
+                sum2 += fullNumber[i] * weights2[i];
+            }
+            let remainder2 = sum2 % 11;
+            if (remainder2 === 10) remainder2 = 0;
+            
+            // Formar número completo
+            const numericTitulo = [...inscricao, ...estadoDigits, remainder1, remainder2].join('');
+            
+            // Formatar título
+            return `${numericTitulo.substring(0, 4)} ${numericTitulo.substring(4, 8)} ${numericTitulo.substring(8, 12)}`;
+        }
+    </script>
+</body>
+</html>
