@@ -6,6 +6,12 @@
     <title>Gerador QA</title>
     <style>
         body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1, h2 {
             font-family: 'Segoe UI', Arial, sans-serif;
             margin: 0;
             padding: 0;
@@ -45,6 +51,10 @@
         }
         
         .section {
+            margin-bottom: 30px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
             background-color: white;
             border-radius: 8px;
             padding: 20px;
@@ -103,6 +113,140 @@
             background-color: #059669;
         }
         
+        /* Estilos específicos para Postmortem */
+        .postmortem-section {
+            grid-column: 1 / -1;
+            max-width: none;
+        }
+        
+        .expandable-header {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 5px 0;
+            user-select: none;
+        }
+        
+        .expandable-header:hover {
+            color: #6366f1;
+        }
+        
+        .expand-icon {
+            font-size: 1.2em;
+            transition: transform 0.3s ease;
+        }
+        
+        .expand-icon.expanded {
+            transform: rotate(180deg);
+        }
+        
+        .postmortem-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+        }
+        
+        .postmortem-content.expanded {
+            max-height: none;
+            overflow: visible;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #444;
+        }
+        
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+            font-family: Arial, sans-serif;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .severity-selector {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .severity-btn {
+            padding: 8px 16px;
+            border: 2px solid #ddd;
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .severity-btn.active {
+            border-color: #6366f1;
+            background-color: #6366f1;
+            color: white;
+        }
+        
+        .severity-btn.low { border-color: #10b981; }
+        .severity-btn.low.active { background-color: #10b981; border-color: #10b981; }
+        
+        .severity-btn.medium { border-color: #f59e0b; }
+        .severity-btn.medium.active { background-color: #f59e0b; border-color: #f59e0b; }
+        
+        .severity-btn.high { border-color: #ef4444; }
+        .severity-btn.high.active { background-color: #ef4444; border-color: #ef4444; }
+        
+        .postmortem-result {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 20px;
+            border-radius: 6px;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            line-height: 1.6;
+            white-space: pre-line;
+        }
+        
+        .postmortem-result h3 {
+            color: #1e293b;
+            margin-top: 0;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 8px;
+        }
+        
+        .postmortem-result strong {
+            color: #374151;
+        }
+        
+        .clear-btn {
+            background-color: #ef4444;
+            margin-left: 10px;
+        }
+        
+        .clear-btn:hover {
+            background-color: #dc2626;
+        }
+        
         footer {
             text-align: center;
             padding: 20px;
@@ -116,13 +260,21 @@
             .grid {
                 grid-template-columns: 1fr;
             }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .severity-selector {
+                justify-content: center;
+            }
         }
     </style>
 </head>
 <body>
     <header>
         <h1>Gerador de Dados para QA</h1>
-        <p>Ferramentas para criar dados de teste</p>
+        <p>Ferramentas para criar dados de teste e análise de postmortem</p>
     </header>
     
     <div class="container">
@@ -168,6 +320,94 @@
                 <div id="titulo-result" class="result"></div>
                 <button class="copy-btn" onclick="copiar('titulo-result')">Copiar</button>
             </div>
+            
+            <!-- Seção de Postmortem - Última na lista -->
+            <div class="section postmortem-section">
+                <div class="expandable-header" onclick="togglePostmortem()">
+                    <h2>📋 Gerador de Postmortem</h2>
+                    <span class="expand-icon" id="postmortem-icon">▼</span>
+                </div>
+                
+                <div class="postmortem-content" id="postmortem-content">
+                    <div class="form-group">
+                        <label for="incident-title">Título do Incidente:</label>
+                        <input type="text" id="incident-title" placeholder="Ex: Falha no sistema de pagamento durante Black Friday">
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="incident-date">Data do Incidente:</label>
+                            <input type="datetime-local" id="incident-date">
+                        </div>
+                        <div class="form-group">
+                            <label for="resolution-date">Data de Resolução:</label>
+                            <input type="datetime-local" id="resolution-date">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Severidade:</label>
+                        <div class="severity-selector">
+                            <div class="severity-btn low" onclick="selectSeverity('low', this)">Baixa</div>
+                            <div class="severity-btn medium" onclick="selectSeverity('medium', this)">Média</div>
+                            <div class="severity-btn high" onclick="selectSeverity('high', this)">Alta</div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="affected-users">Usuários Afetados:</label>
+                            <input type="number" id="affected-users" placeholder="Ex: 1500">
+                        </div>
+                        <div class="form-group">
+                            <label for="business-impact">Impacto no Negócio:</label>
+                            <select id="business-impact">
+                                <option value="">Selecione...</option>
+                                <option value="Crítico">Crítico</option>
+                                <option value="Alto">Alto</option>
+                                <option value="Médio">Médio</option>
+                                <option value="Baixo">Baixo</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="incident-summary">Resumo do Incidente:</label>
+                        <textarea id="incident-summary" placeholder="Descreva brevemente o que aconteceu..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="root-cause">Causa Raiz:</label>
+                        <textarea id="root-cause" placeholder="Qual foi a causa fundamental do problema?"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="immediate-actions">Ações Imediatas Tomadas:</label>
+                        <textarea id="immediate-actions" placeholder="Quais ações foram tomadas para resolver o problema?"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="preventive-actions">Ações Preventivas:</label>
+                        <textarea id="preventive-actions" placeholder="Que medidas serão implementadas para evitar recorrência?"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="lessons-learned">Lições Aprendidas:</label>
+                        <textarea id="lessons-learned" placeholder="Principais aprendizados e melhorias identificadas..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="responsible-team">Equipe Responsável:</label>
+                        <input type="text" id="responsible-team" placeholder="Ex: Equipe de Backend, DevOps">
+                    </div>
+                    
+                    <button onclick="gerarPostmortem()">Gerar Postmortem</button>
+                    <button class="clear-btn" onclick="limparFormulario()">Limpar Formulário</button>
+                    
+                    <div id="postmortem-result" class="result postmortem-result" style="display: none;"></div>
+                    <button class="copy-btn" onclick="copiar('postmortem-result')" style="display: none;" id="copy-postmortem">Copiar Postmortem</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -176,6 +416,29 @@
     </footer>
 
     <script>
+        let selectedSeverity = '';
+
+        // Função para expandir/colapsar o postmortem
+        function togglePostmortem() {
+            const content = document.getElementById('postmortem-content');
+            const icon = document.getElementById('postmortem-icon');
+            
+            if (content.classList.contains('expanded')) {
+                content.classList.remove('expanded');
+                icon.classList.remove('expanded');
+                icon.textContent = '▼';
+            } else {
+                content.classList.add('expanded');
+                icon.classList.add('expanded');
+                icon.textContent = '▲';
+                
+                // Pequeno delay para garantir que a animação termine antes do scroll
+                setTimeout(() => {
+                    content.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }, 300);
+            }
+        }
+
         // Função para copiar para a área de transferência
         function copiar(elementId) {
             const text = document.getElementById(elementId).textContent;
@@ -190,273 +453,286 @@
               });
         }
 
-        // Funções utilitárias
+        // Função para selecionar severidade
+        function selectSeverity(severity, element) {
+            // Remove active de todos os botões
+            document.querySelectorAll('.severity-btn').forEach(btn => btn.classList.remove('active'));
+            // Adiciona active ao botão clicado
+            element.classList.add('active');
+            selectedSeverity = severity;
+        }
+
+        // Função para gerar o postmortem
+        function gerarPostmortem() {
+            const title = document.getElementById('incident-title').value;
+            const incidentDate = document.getElementById('incident-date').value;
+            const resolutionDate = document.getElementById('resolution-date').value;
+            const affectedUsers = document.getElementById('affected-users').value;
+            const businessImpact = document.getElementById('business-impact').value;
+            const summary = document.getElementById('incident-summary').value;
+            const rootCause = document.getElementById('root-cause').value;
+            const immediateActions = document.getElementById('immediate-actions').value;
+            const preventiveActions = document.getElementById('preventive-actions').value;
+            const lessonsLearned = document.getElementById('lessons-learned').value;
+            const responsibleTeam = document.getElementById('responsible-team').value;
+
+            if (!title || !summary || !rootCause) {
+                alert('Por favor, preencha pelo menos o título, resumo e causa raiz do incidente.');
+                return;
+            }
+
+            // Calcular duração do incidente
+            let duration = '';
+            if (incidentDate && resolutionDate) {
+                const start = new Date(incidentDate);
+                const end = new Date(resolutionDate);
+                const diffMs = end - start;
+                const diffHours = Math.round(diffMs / (1000 * 60 * 60));
+                const diffMinutes = Math.round((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+                
+                if (diffHours > 0) {
+                    duration = `${diffHours}h ${diffMinutes}min`;
+                } else {
+                    duration = `${diffMinutes} minutos`;
+                }
+            }
+
+            const severityText = selectedSeverity ? selectedSeverity.charAt(0).toUpperCase() + selectedSeverity.slice(1) : 'Não definida';
+            
+            const postmortem = `
+📋 RELATÓRIO DE POSTMORTEM
+
+═══════════════════════════════════════════════════════════════
+
+🔴 INFORMAÇÕES GERAIS
+
+Título: ${title}
+Data do Incidente: ${incidentDate ? new Date(incidentDate).toLocaleString('pt-BR') : 'Não informada'}
+Data de Resolução: ${resolutionDate ? new Date(resolutionDate).toLocaleString('pt-BR') : 'Não informada'}
+${duration ? `Duração Total: ${duration}` : ''}
+Severidade: ${severityText}
+Usuários Afetados: ${affectedUsers || 'Não informado'}
+Impacto no Negócio: ${businessImpact || 'Não informado'}
+Equipe Responsável: ${responsibleTeam || 'Não informada'}
+
+═══════════════════════════════════════════════════════════════
+
+📄 RESUMO DO INCIDENTE
+
+${summary}
+
+═══════════════════════════════════════════════════════════════
+
+🔍 CAUSA RAIZ
+
+${rootCause}
+
+═══════════════════════════════════════════════════════════════
+
+⚡ AÇÕES IMEDIATAS TOMADAS
+
+${immediateActions || 'Nenhuma ação imediata foi documentada.'}
+
+═══════════════════════════════════════════════════════════════
+
+🛡️ AÇÕES PREVENTIVAS
+
+${preventiveActions || 'Nenhuma ação preventiva foi documentada.'}
+
+═══════════════════════════════════════════════════════════════
+
+💡 LIÇÕES APRENDIDAS
+
+${lessonsLearned || 'Nenhuma lição aprendida foi documentada.'}
+
+═══════════════════════════════════════════════════════════════
+
+📊 MÉTRICAS E INDICADORES
+
+• Tempo de Detecção: ${duration ? 'Calculado automaticamente' : 'A ser definido'}
+• Tempo de Resolução: ${duration || 'A ser definido'}
+• MTTR (Mean Time To Recovery): A ser calculado
+• Número de Incidentes Similares: A ser analisado
+
+═══════════════════════════════════════════════════════════════
+
+✅ PRÓXIMOS PASSOS
+
+1. Implementar ações preventivas identificadas
+2. Definir responsáveis e prazos para cada ação
+3. Agendar revisão do postmortem em 30 dias
+4. Atualizar documentação e runbooks
+5. Compartilhar aprendizados com outras equipes
+
+═══════════════════════════════════════════════════════════════
+
+Documento gerado em: ${new Date().toLocaleString('pt-BR')}
+Ferramenta: Gerador QA - Postmortem Tool
+            `.trim();
+
+            const resultDiv = document.getElementById('postmortem-result');
+            const copyBtn = document.getElementById('copy-postmortem');
+            
+            resultDiv.textContent = postmortem;
+            resultDiv.style.display = 'block';
+            copyBtn.style.display = 'inline-block';
+            
+            // Scroll para o resultado
+            resultDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // Função para limpar o formulário
+        function limparFormulario() {
+            if (confirm('Tem certeza que deseja limpar todos os campos?')) {
+                document.getElementById('incident-title').value = '';
+                document.getElementById('incident-date').value = '';
+                document.getElementById('resolution-date').value = '';
+                document.getElementById('affected-users').value = '';
+                document.getElementById('business-impact').value = '';
+                document.getElementById('incident-summary').value = '';
+                document.getElementById('root-cause').value = '';
+                document.getElementById('immediate-actions').value = '';
+                document.getElementById('preventive-actions').value = '';
+                document.getElementById('lessons-learned').value = '';
+                document.getElementById('responsible-team').value = '';
+                
+                // Reset severity selection
+                document.querySelectorAll('.severity-btn').forEach(btn => btn.classList.remove('active'));
+                selectedSeverity = '';
+                
+                // Hide result
+                document.getElementById('postmortem-result').style.display = 'none';
+                document.getElementById('copy-postmortem').style.display = 'none';
+            }
+        }
+
+        // Funções utilitárias (mantidas do código original)
         function randomInt(min, max) {
             return Math.floor(Math.random() * (max - min + 1)) + min;
         }
 
-        function formatDate(day, month, year) {
-            return `${day.toString().padStart(2, '0')}/${month.toString().padStart(2, '0')}/${year}`;
-        }
-
         // Gerador de CPF
         function gerarCPF() {
-            const digits = Array.from({length: 9}, () => randomInt(0, 9));
+            const n1 = randomInt(0, 9);
+            const n2 = randomInt(0, 9);
+            const n3 = randomInt(0, 9);
+            const n4 = randomInt(0, 9);
+            const n5 = randomInt(0, 9);
+            const n6 = randomInt(0, 9);
+            const n7 = randomInt(0, 9);
+            const n8 = randomInt(0, 9);
+            const n9 = randomInt(0, 9);
             
-            // Primeiro dígito verificador
-            let sum = 0;
-            for (let i = 0; i < 9; i++) {
-                sum += digits[i] * (10 - i);
-            }
-            let remainder = sum % 11;
-            const dv1 = remainder < 2 ? 0 : 11 - remainder;
-            digits.push(dv1);
+            let d1 = n1*10 + n2*9 + n3*8 + n4*7 + n5*6 + n6*5 + n7*4 + n8*3 + n9*2;
+            d1 = 11 - (d1 % 11);
+            if (d1 >= 10) d1 = 0;
             
-            // Segundo dígito verificador
-            sum = 0;
-            for (let i = 0; i < 10; i++) {
-                sum += digits[i] * (11 - i);
-            }
-            remainder = sum % 11;
-            const dv2 = remainder < 2 ? 0 : 11 - remainder;
-            digits.push(dv2);
+            let d2 = n1*11 + n2*10 + n3*9 + n4*8 + n5*7 + n6*6 + n7*5 + n8*4 + n9*3 + d1*2;
+            d2 = 11 - (d2 % 11);
+            if (d2 >= 10) d2 = 0;
             
-            // Formatar CPF
-            const cpf = digits.join('');
-            return `${cpf.substring(0, 3)}.${cpf.substring(3, 6)}.${cpf.substring(6, 9)}-${cpf.substring(9, 11)}`;
+            return `${n1}${n2}${n3}.${n4}${n5}${n6}.${n7}${n8}${n9}-${d1}${d2}`;
         }
 
         // Gerador de CNPJ
         function gerarCNPJ() {
-            const digits = Array.from({length: 8}, () => randomInt(0, 9));
-            digits.push(0, 0, 0, 1); // 0001 para filial
+            const n = Array.from({length: 12}, () => randomInt(0, 9));
             
-            // Primeiro dígito verificador
-            const weights1 = [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
-            let sum = 0;
+            let d1 = 0;
+            const sequence1 = [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
             for (let i = 0; i < 12; i++) {
-                sum += digits[i] * weights1[i];
+                d1 += n[i] * sequence1[i];
             }
-            let remainder = sum % 11;
-            const dv1 = remainder < 2 ? 0 : 11 - remainder;
-            digits.push(dv1);
+            d1 = 11 - (d1 % 11);
+            if (d1 >= 10) d1 = 0;
             
-            // Segundo dígito verificador
-            const weights2 = [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
-            sum = 0;
-            for (let i = 0; i < 13; i++) {
-                sum += digits[i] * weights2[i];
+            let d2 = 0;
+            const sequence2 = [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
+            for (let i = 0; i < 12; i++) {
+                d2 += n[i] * sequence2[i];
             }
-            remainder = sum % 11;
-            const dv2 = remainder < 2 ? 0 : 11 - remainder;
-            digits.push(dv2);
+            d2 += d1 * sequence2[12];
+            d2 = 11 - (d2 % 11);
+            if (d2 >= 10) d2 = 0;
             
-            // Formatar CNPJ
-            const cnpj = digits.join('');
-            return `${cnpj.substring(0, 2)}.${cnpj.substring(2, 5)}.${cnpj.substring(5, 8)}/${cnpj.substring(8, 12)}-${cnpj.substring(12, 14)}`;
+            return `${n[0]}${n[1]}.${n[2]}${n[3]}${n[4]}.${n[5]}${n[6]}${n[7]}/${n[8]}${n[9]}${n[10]}${n[11]}-${d1}${d2}`;
         }
 
         // Gerador de RG
         function gerarRG() {
-            const digits = Array.from({length: 8}, () => randomInt(0, 9));
-            
-            // Calcular dígito verificador
-            let sum = 0;
-            const weights = [2, 3, 4, 5, 6, 7, 8, 9];
-            for (let i = 0; i < 8; i++) {
-                sum += digits[i] * weights[i];
-            }
-            const remainder = sum % 11;
-            
-            let dv;
-            if (remainder === 0) {
-                dv = '0';
-            } else if (remainder === 1) {
-                dv = 'X';
-            } else {
-                dv = (11 - remainder).toString();
-            }
-            
-            // Formatar RG
-            const rg = digits.join('') + dv;
-            return `${rg.substring(0, 2)}.${rg.substring(2, 5)}.${rg.substring(5, 8)}-${rg.substring(8)}`;
+            return `${randomInt(10, 99)}.${randomInt(100, 999)}.${randomInt(100, 999)}-${randomInt(0, 9)}`;
         }
 
-        // Gerador de Cartão de Crédito
+        // Gerador de Cartão
         function gerarCartao() {
-            const prefixes = {
-                visa: '4',
-                mastercard: '5',
-                amex: '3',
-                discover: '6'
-            };
+            const prefixos = ['4', '5', '6'];
+            const prefixo = prefixos[randomInt(0, prefixos.length - 1)];
+            let numero = prefixo;
             
-            // Selecionar prefixo aleatório
-            const brands = Object.keys(prefixes);
-            const brand = brands[randomInt(0, brands.length - 1)];
-            let prefix = prefixes[brand];
-            if (brand === 'mastercard') {
-                prefix += randomInt(1, 5);
-            } else if (brand === 'amex') {
-                prefix += (randomInt(0, 1) === 0 ? '4' : '7');
-            } else if (brand === 'discover') {
-                prefix += '011';
+            for (let i = 0; i < 15; i++) {
+                numero += randomInt(0, 9);
             }
             
-            // Comprimento do cartão
-            const length = brand === 'amex' ? 15 : 16;
-            
-            // Gerar número do cartão
-            let number = prefix;
-            while (number.length < length - 1) {
-                number += randomInt(0, 9);
-            }
-            
-            // Calcular dígito verificador (Algoritmo de Luhn)
-            let sum = 0;
-            let alternate = false;
-            for (let i = number.length - 1; i >= 0; i--) {
-                let n = parseInt(number.charAt(i));
-                if (alternate) {
-                    n *= 2;
-                    if (n > 9) {
-                        n -= 9;
-                    }
-                }
-                sum += n;
-                alternate = !alternate;
-            }
-            const checkDigit = (10 - (sum % 10)) % 10;
-            number += checkDigit;
-            
-            // Gerar outros detalhes do cartão
-            const month = randomInt(1, 12).toString().padStart(2, '0');
-            const year = (new Date().getFullYear() + randomInt(1, 5)).toString().substring(2);
-            const cvv = brand === 'amex' ? randomInt(1000, 9999) : randomInt(100, 999);
-            
-            // Formatar saída
-            let cardNumber = '';
-            if (brand === 'amex') {
-                cardNumber = `${number.substring(0, 4)} ${number.substring(4, 10)} ${number.substring(10)}`;
-            } else {
-                cardNumber = `${number.substring(0, 4)} ${number.substring(4, 8)} ${number.substring(8, 12)} ${number.substring(12, 16)}`;
-            }
-            
-            return `${cardNumber}\nBandeira: ${brand.toUpperCase()}\nValidade: ${month}/${year}\nCVV: ${cvv}`;
-        }
-
-        // Gerador de Nome
-        function gerarNome(gender = null) {
-            const firstNamesMale = ["João", "Pedro", "Carlos", "Antonio", "José", "Paulo", "Lucas", "Marcos", "Gabriel", "Rafael"];
-            const firstNamesFemale = ["Maria", "Ana", "Juliana", "Fernanda", "Mariana", "Aline", "Patrícia", "Camila", "Luciana", "Vanessa"];
-            const lastNames = ["Silva", "Santos", "Oliveira", "Souza", "Pereira", "Costa", "Rodrigues", "Almeida", "Lima", "Ferreira"];
-            
-            if (gender === null) {
-                gender = randomInt(0, 1) === 0 ? 'male' : 'female';
-            }
-            
-            const firstNames = gender === 'male' ? firstNamesMale : firstNamesFemale;
-            const firstName = firstNames[randomInt(0, firstNames.length - 1)];
-            
-            // 1 ou 2 sobrenomes
-            const numLastNames = randomInt(1, 2);
-            let fullLastName = lastNames[randomInt(0, lastNames.length - 1)];
-            
-            if (numLastNames === 2) {
-                let secondLastName;
-                do {
-                    secondLastName = lastNames[randomInt(0, lastNames.length - 1)];
-                } while (secondLastName === fullLastName);
-                
-                fullLastName += ' ' + secondLastName;
-            }
-            
-            return {
-                fullName: `${firstName} ${fullLastName}`,
-                firstName: firstName,
-                lastName: fullLastName,
-                gender: gender
-            };
+            return numero.replace(/(.{4})/g, '$1 ').trim();
         }
 
         // Gerador de Pessoa
         function gerarPessoa() {
-            const gender = randomInt(0, 1) === 0 ? 'male' : 'female';
-            const name = gerarNome(gender);
+            const nomes = ['Ana', 'João', 'Maria', 'Pedro', 'Carla', 'Paulo', 'Fernanda', 'Carlos', 'Juliana', 'Rafael'];
+            const sobrenomes = ['Silva', 'Santos', 'Oliveira', 'Souza', 'Lima', 'Pereira', 'Costa', 'Rodrigues', 'Almeida', 'Nascimento'];
+            const emails = ['gmail.com', 'hotmail.com', 'yahoo.com.br', 'outlook.com'];
             
-            // Gerar data de nascimento
-            const today = new Date();
-            const age = randomInt(18, 70);
-            const birthYear = today.getFullYear() - age;
-            const birthMonth = randomInt(1, 12);
-            const daysInMonth = new Date(birthYear, birthMonth, 0).getDate();
-            const birthDay = randomInt(1, daysInMonth);
+            const nome = nomes[randomInt(0, nomes.length - 1)];
+            const sobrenome = sobrenomes[randomInt(0, sobrenomes.length - 1)];
+            const email = emails[randomInt(0, emails.length - 1)];
+            const idade = randomInt(18, 80);
+            const telefone = `(${randomInt(11, 99)}) ${randomInt(90000, 99999)}-${randomInt(1000, 9999)}`;
             
-            // Gerar CPF
-            const cpf = gerarCPF();
-            
-            // Gerar email
-            const domains = ['gmail.com', 'outlook.com', 'hotmail.com', 'yahoo.com.br', 'uol.com.br'];
-            const domain = domains[randomInt(0, domains.length - 1)];
-            const normalizedName = name.firstName.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
-            const normalizedLastName = name.lastName.split(' ')[0].normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
-            const email = `${normalizedName}.${normalizedLastName}${randomInt(10, 99)}@${domain}`;
-            
-            // Gerar telefone
-            const ddd = randomInt(11, 99);
-            const phonePrefix = randomInt(7, 9);
-            const phoneNumber = Array.from({length: 8}, () => randomInt(0, 9)).join('');
-            const phone = `(${ddd}) ${phonePrefix}${phoneNumber.substring(0, 4)}-${phoneNumber.substring(4)}`;
-            
-            return `Nome: ${name.fullName}
-Gênero: ${gender === 'male' ? 'Masculino' : 'Feminino'}
-Data de Nascimento: ${formatDate(birthDay, birthMonth, birthYear)}
-Idade: ${age} anos
-CPF: ${cpf}
-E-mail: ${email}
-Telefone: ${phone}`;
+            return `Nome: ${nome} ${sobrenome}
+Email: ${nome.toLowerCase()}.${sobrenome.toLowerCase()}@${email}
+Idade: ${idade} anos
+Telefone: ${telefone}
+CPF: ${gerarCPF()}`;
         }
 
         // Gerador de Título de Eleitor
         function gerarTitulo() {
-            const estados = ['SP', 'RJ', 'MG', 'RS', 'PR', 'BA', 'SC', 'GO', 'PE', 'CE'];
-            const codigosEstados = {
-                'SP': '01', 'RJ': '02', 'MG': '03', 'RS': '04', 'PR': '05',
-                'BA': '06', 'SC': '07', 'GO': '08', 'PE': '09', 'CE': '10'
-            };
-            
-            const estado = estados[randomInt(0, estados.length - 1)];
-            const estadoCode = codigosEstados[estado];
-            
-            // Gerar 8 dígitos aleatórios para a inscrição
-            const inscricao = Array.from({length: 8}, () => randomInt(0, 9));
-            
-            // Calcular primeiro dígito verificador
-            let sum1 = 0;
+            let numero = '';
             for (let i = 0; i < 8; i++) {
-                sum1 += inscricao[i] * (i + 2);
+                numero += randomInt(0, 9);
             }
-            let remainder1 = sum1 % 11;
-            if (remainder1 === 10) remainder1 = 0;
             
-            // Calcular segundo dígito verificador
-            const estadoDigits = [parseInt(estadoCode[0]), parseInt(estadoCode[1])];
-            const fullNumber = [...inscricao, ...estadoDigits, remainder1];
-            const weights2 = [9, 8, 7, 6, 5, 4, 3, 2, 9, 8, 7];
-            
-            let sum2 = 0;
-            for (let i = 0; i < 11; i++) {
-                sum2 += fullNumber[i] * weights2[i];
+            let d1 = 0;
+            for (let i = 0; i < 8; i++) {
+                d1 += parseInt(numero[i]) * (i + 2);
             }
-            let remainder2 = sum2 % 11;
-            if (remainder2 === 10) remainder2 = 0;
+            d1 = d1 % 11;
+            if (d1 < 2) d1 = 0;
+            else d1 = 11 - d1;
             
-            // Formar número completo
-            const numericTitulo = [...inscricao, ...estadoDigits, remainder1, remainder2].join('');
+            let d2 = 0;
+            for (let i = 0; i < 8; i++) {
+                d2 += parseInt(numero[i]) * (i + 7);
+            }
+            d2 += d1 * 7;
+            d2 = d2 % 11;
+            if (d2 < 2) d2 = 0;
+            else d2 = 11 - d2;
             
-            // Formatar título
-            return `${numericTitulo.substring(0, 4)} ${numericTitulo.substring(4, 8)} ${numericTitulo.substring(8, 12)}`;
+            return `${numero.substring(0, 4)} ${numero.substring(4, 8)} ${d1}${d2}`;
         }
+
+        // Definir data atual como padrão
+        document.addEventListener('DOMContentLoaded', function() {
+            const now = new Date();
+            const localDateTime = now.getFullYear() + '-' + 
+                String(now.getMonth() + 1).padStart(2, '0') + '-' + 
+                String(now.getDate()).padStart(2, '0') + 'T' + 
+                String(now.getHours()).padStart(2, '0') + ':' + 
+                String(now.getMinutes()).padStart(2, '0');
+            
+            document.getElementById('incident-date').value = localDateTime;
+        });
     </script>
 </body>
 </html>
