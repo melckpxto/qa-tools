@@ -920,3 +920,53 @@ CPF: ${gerarCPF()}`;
     </script>
 </body>
 </html>
+<!-- código original mantido -->
+<!-- Adicionando bloco de Email Temporário -->
+
+<div class="section">
+    <h2>Gerador de Email Temporário</h2>
+    <button onclick="generateTempEmail()">Gerar Email</button>
+    <div class="result" id="temp-email">---</div>
+    <button onclick="checkInbox()">Ver Caixa de Entrada</button>
+    <ul id="email-inbox" class="result" style="list-style-type: disc; padding-left: 1rem;"></ul>
+</div>
+
+<script>
+    let login, domain;
+
+    function generateTempEmail() {
+        login = Math.random().toString(36).substring(2, 10);
+        domain = '1secmail.com';
+        const email = `${login}@${domain}`;
+        document.getElementById('temp-email').innerText = email;
+        document.getElementById('email-inbox').innerHTML = '<li>Aguardando mensagens...</li>';
+    }
+
+    async function checkInbox() {
+        if (!login || !domain) {
+            alert('Gere um email primeiro.');
+            return;
+        }
+
+        const res = await fetch(`https://www.1secmail.com/api/v1/?action=getMessages&login=${login}&domain=${domain}`);
+        const messages = await res.json();
+        const inbox = document.getElementById('email-inbox');
+        inbox.innerHTML = '';
+
+        if (messages.length === 0) {
+            inbox.innerHTML = '<li>Sem mensagens recebidas.</li>';
+            return;
+        }
+
+        for (const msg of messages) {
+            const li = document.createElement('li');
+            li.innerText = `✉️ ${msg.from} — ${msg.subject}`;
+            li.onclick = async () => {
+                const content = await fetch(`https://www.1secmail.com/api/v1/?action=readMessage&login=${login}&domain=${domain}&id=${msg.id}`)
+                                      .then(r => r.json());
+                alert(`📨 Assunto: ${content.subject}\n\n${content.textBody || '[Mensagem sem corpo ou apenas HTML]'}`);
+            };
+            inbox.appendChild(li);
+        }
+    }
+</script>
