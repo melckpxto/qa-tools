@@ -496,7 +496,7 @@
             </div>
             
             <!-- Bloco inserido abaixo do postmortem -->
-      <div class="section postmortem-section">
+    <div class="section postmortem-section">
     <h2>📨 Gerador de Email Temporário</h2>
     <div class="form-group">
         <button onclick="generateTempEmail()">Gerar Email</button>
@@ -508,7 +508,7 @@
         <ul id="email-inbox" style="list-style: disc; padding-left: 1rem; margin-top: 1rem;"></ul>
     </div>
 </div>
-            
+  
             <!-- Seção de Postmortem - Última na lista -->
             <div class="section postmortem-section">
                 <div class="expandable-header" onclick="togglePostmortem()">
@@ -938,14 +938,39 @@ CPF: ${gerarCPF()}`;
 <!-- Adicionando bloco de Email Temporário (após o postmortem) -->
 
 <script>
-    let login, domain;
+    let account = null;
+    let token = null;
 
-    function generateTempEmail() {
-        login = Math.random().toString(36).substring(2, 10);
-        domain = '1secmail.com';
-        const email = `${login}@${domain}`;
-        document.getElementById('temp-email').innerText = email;
+    async function generateTempEmail() {
+        const res = await fetch('https://api.mail.tm/accounts', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                address: `qa${Date.now()}@mail.tm`,
+                password: 'Q@123456'
+            })
+        });
+
+        if (!res.ok) {
+            alert('Erro ao gerar e-mail temporário. Tente novamente.');
+            return;
+        }
+
+        account = await res.json();
+        document.getElementById('temp-email').innerText = account.address;
         document.getElementById('email-inbox').innerHTML = '<li>Aguardando mensagens...</li>';
+
+        const tokenRes = await fetch('https://api.mail.tm/token', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                address: account.address,
+                password: 'Q@123456'
+            })
+        });
+
+        const tokenData = await tokenRes.json();
+        token = tokenData.token;
     }
 
     function copiarEmail() {
@@ -960,13 +985,17 @@ CPF: ${gerarCPF()}`;
     }
 
     async function checkInbox() {
-        if (!login || !domain) {
+        if (!token || !account) {
             alert('Gere um email primeiro.');
             return;
         }
 
-        const res = await fetch(`https://www.1secmail.com/api/v1/?action=getMessages&login=${login}&domain=${domain}`);
-        const messages = await res.json();
+        const res = await fetch('https://api.mail.tm/messages', {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+
+        const data = await res.json();
+        const messages = data['hydra:member'];
         const inbox = document.getElementById('email-inbox');
         inbox.innerHTML = '';
 
@@ -977,11 +1006,12 @@ CPF: ${gerarCPF()}`;
 
         for (const msg of messages) {
             const li = document.createElement('li');
-            li.innerText = `✉️ ${msg.from} — ${msg.subject}`;
+            li.innerText = `✉️ ${msg.from.address} — ${msg.subject}`;
             li.onclick = async () => {
-                const content = await fetch(`https://www.1secmail.com/api/v1/?action=readMessage&login=${login}&domain=${domain}&id=${msg.id}`)
-                                      .then(r => r.json());
-                alert(`📨 Assunto: ${content.subject}\n\n${content.textBody || '[Mensagem sem corpo ou apenas HTML]'}`);
+                const content = await fetch(`https://api.mail.tm/messages/${msg.id}`, {
+                    headers: { Authorization: `Bearer ${token}` }
+                }).then(r => r.json());
+                alert(`📨 Assunto: ${content.subject}\n\n${content.text || '[Mensagem sem corpo ou apenas HTML]'}`);
             };
             inbox.appendChild(li);
         }
