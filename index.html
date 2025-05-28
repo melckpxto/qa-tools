@@ -496,7 +496,7 @@
             </div>
             
             <!-- Bloco inserido abaixo do postmortem -->
-    <div class="section postmortem-section">
+   <div class="section postmortem-section">
     <h2>📨 Gerador de Email Temporário</h2>
     <div class="form-group">
         <button onclick="generateTempEmail()">Gerar Email</button>
@@ -508,7 +508,7 @@
         <ul id="email-inbox" style="list-style: disc; padding-left: 1rem; margin-top: 1rem;"></ul>
     </div>
 </div>
-  
+
             <!-- Seção de Postmortem - Última na lista -->
             <div class="section postmortem-section">
                 <div class="expandable-header" onclick="togglePostmortem()">
@@ -942,12 +942,20 @@ CPF: ${gerarCPF()}`;
     let token = null;
 
     async function generateTempEmail() {
+        const domainRes = await fetch('https://api.mail.tm/domains');
+        const domainData = await domainRes.json();
+        const domain = domainData["hydra:member"]?.[0]?.domain || 'mail.tm';
+
+        const randomUser = Math.random().toString(36).substring(2, 12);
+        const email = `${randomUser}@${domain}`;
+        const password = Math.random().toString(36).substring(2) + 'A1!';
+
         const res = await fetch('https://api.mail.tm/accounts', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                address: `qa${Date.now()}@mail.tm`,
-                password: 'Q@123456'
+                address: email,
+                password: password
             })
         });
 
@@ -965,7 +973,7 @@ CPF: ${gerarCPF()}`;
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 address: account.address,
-                password: 'Q@123456'
+                password: password
             })
         });
 
