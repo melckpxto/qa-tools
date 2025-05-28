@@ -921,15 +921,7 @@ CPF: ${gerarCPF()}`;
 </body>
 </html>
 <!-- código original mantido -->
-<!-- Adicionando bloco de Email Temporário -->
-
-<div class="section">
-    <h2>Gerador de Email Temporário</h2>
-    <button onclick="generateTempEmail()">Gerar Email</button>
-    <div class="result" id="temp-email">---</div>
-    <button onclick="checkInbox()">Ver Caixa de Entrada</button>
-    <ul id="email-inbox" style="list-style: disc; padding-left: 1rem; margin-top: 1rem;"></ul>
-</div>
+<!-- Adicionando bloco de Email Temporário (após o postmortem) -->
 
 <script>
     let login, domain;
@@ -970,3 +962,16 @@ CPF: ${gerarCPF()}`;
         }
     }
 </script>
+
+<!-- Bloco inserido abaixo do postmortem -->
+<div class="section postmortem-section">
+    <h2>📨 Gerador de Email Temporário</h2>
+    <div class="form-group">
+        <button onclick="generateTempEmail()">Gerar Email</button>
+        <div class="result" id="temp-email">---</div>
+    </div>
+    <div class="form-group">
+        <button onclick="checkInbox()">Ver Caixa de Entrada</button>
+        <ul id="email-inbox" style="list-style: disc; padding-left: 1rem; margin-top: 1rem;"></ul>
+    </div>
+</div>
