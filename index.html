@@ -852,6 +852,29 @@ Ferramenta: Gerador QA - Postmortem Tool
         }
 
         // Gerador de Cartão
+<style>
+.card-info-line {
+    display: flex;
+    flex-direction: row;
+    gap: 1.5rem;
+    margin-top: 0.5rem;
+    flex-wrap: wrap;
+}
+.card-info-box {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    flex: 1;
+    min-width: 160px;
+    text-align: center;
+}
+</style>
+
+<script>
 function gerarCartao() {
     const prefixos = ['4', '5', '6'];
     const prefixo = prefixos[randomInt(0, prefixos.length - 1)];
