@@ -852,7 +852,7 @@ Ferramenta: Gerador QA - Postmortem Tool
         }
 
         // Gerador de Cartão
-       function gerarCartao() {
+ function gerarCartao() {
     const prefixos = ['4', '5', '6'];
     const prefixo = prefixos[randomInt(0, prefixos.length - 1)];
     let numero = prefixo;
@@ -872,7 +872,7 @@ Ferramenta: Gerador QA - Postmortem Tool
     // CVV (3 dígitos)
     const cvv = String(randomInt(0, 999)).padStart(3, '0');
 
-    return `Número: ${numeroFormatado}\nValidade: ${validade}\nCVV: ${cvv}`;
+    return `Número: ${numeroFormatado}\nValidade: ${validade} | CVV: ${cvv}`;
 }
 
         // Gerador de Pessoa
