@@ -869,7 +869,7 @@ function gerarCartao() {
 
     const cvv = String(randomInt(0, 999)).padStart(3, '0');
 
-    return `${numeroFormatado}\n${validade} | ${cvv}`;
+    return `${numeroFormatado}\n\n${validade} | ${cvv}`;
 }
 
         // Gerador de Pessoa
