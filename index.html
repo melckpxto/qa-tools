@@ -872,7 +872,11 @@ Ferramenta: Gerador QA - Postmortem Tool
     // CVV (3 dígitos)
     const cvv = String(randomInt(0, 999)).padStart(3, '0');
 
-    return `Número: ${numeroFormatado}\nValidade: ${validade} | CVV: ${cvv}`;
+    return `💳 Número do Cartão:
+${numeroFormatado}
+
+📅 Validade: ${validade}
+🔒 CVV: ${cvv}`;
 }
 
         // Gerador de Pessoa
