@@ -852,17 +852,28 @@ Ferramenta: Gerador QA - Postmortem Tool
         }
 
         // Gerador de Cartão
-        function gerarCartao() {
-            const prefixos = ['4', '5', '6'];
-            const prefixo = prefixos[randomInt(0, prefixos.length - 1)];
-            let numero = prefixo;
-            
-            for (let i = 0; i < 15; i++) {
-                numero += randomInt(0, 9);
-            }
-            
-            return numero.replace(/(.{4})/g, '$1 ').trim();
-        }
+       function gerarCartao() {
+    const prefixos = ['4', '5', '6'];
+    const prefixo = prefixos[randomInt(0, prefixos.length - 1)];
+    let numero = prefixo;
+
+    for (let i = 0; i < 15; i++) {
+        numero += randomInt(0, 9);
+    }
+
+    // Formatar número do cartão
+    const numeroFormatado = numero.replace(/(.{4})/g, '$1 ').trim();
+
+    // Validade (entre 1 e 5 anos no futuro)
+    const mes = String(randomInt(1, 12)).padStart(2, '0');
+    const ano = new Date().getFullYear() + randomInt(1, 5);
+    const validade = `${mes}/${String(ano).slice(-2)}`;
+
+    // CVV (3 dígitos)
+    const cvv = String(randomInt(0, 999)).padStart(3, '0');
+
+    return `Número: ${numeroFormatado}\nValidade: ${validade}\nCVV: ${cvv}`;
+}
 
         // Gerador de Pessoa
         function gerarPessoa() {
